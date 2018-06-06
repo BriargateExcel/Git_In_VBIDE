@@ -36,7 +36,6 @@ Public Sub CreateMenu()
     Set MenuItem = NewMenu.Controls.Add(Type:=msoControlButton)
     With MenuItem
         .Caption = "Export VBA Project"
-        .FaceId = 183
         .OnAction = "'" & ThisWorkbook.Name & "'!ExportVBAProject"
     End With
     Set MenuEvent.GitEvtHandler = Application.VBE.Events.CommandBarEvents(MenuItem)
@@ -47,7 +46,6 @@ Public Sub CreateMenu()
     Set MenuItem = NewMenu.Controls.Add(Type:=msoControlButton)
     With MenuItem
         .Caption = "Import VBA Project"
-        .FaceId = 124
         .OnAction = "ImportVBAProject"
     End With
     Set MenuEvent.GitEvtHandler = Application.VBE.Events.CommandBarEvents(MenuItem)
@@ -272,6 +270,7 @@ Private Function DeleteComponentsInProject(ByVal Proj As VBIDE.VBProject) As Boo
 ' True = components deleted
 ' False = components not deleted
 
+DeleteComponentsInProject = False
     Select Case MsgBox("All components of this VBA Project will be deleted. " & _
                        "Do you want to continue?", _
                        vbYesNo Or vbQuestion, _
@@ -287,9 +286,9 @@ Private Function DeleteComponentsInProject(ByVal Proj As VBIDE.VBProject) As Boo
                 Proj.VBComponents.Remove VBComp
             End If
         Next VBComp
-            
+DeleteComponentsInProject = True
     Case vbNo
-
+DeleteComponentsInProject = False
     End Select
 
 End Function                                     ' DeleteComponentsInProject
