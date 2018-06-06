@@ -66,8 +66,7 @@ End Sub
 
 Public Sub ExportVBAProject()
     Dim Export As Boolean
-    Dim szExportPath As String
-    Dim szFileName As String
+    Dim FileName As String
     Dim cmpComponent As VBIDE.VBComponent
     Dim Path As String
     Dim VBAProj As Variant
@@ -90,25 +89,27 @@ Public Sub ExportVBAProject()
         Exit Sub
     End If
 
-    Path = GetFolder("Select the Folder to Place the VBA Code")
+    Path = GetFolder( _
+           "Select the Folder to Place the VBA Code", _
+           ThisWorkbook.Path)
     If Path = vbNullString Then Exit Sub
-    szExportPath = Path & "\"
+    Path = Path & "\"
 
     For Each cmpComponent In ProjectToExport.VBComponents
 
         Export = True
-        szFileName = cmpComponent.Name
+        FileName = cmpComponent.Name
 
         ''' Concatenate the correct filename for export.
         Select Case cmpComponent.Type
         Case vbext_ct_ClassModule
-            szFileName = szFileName & ".cls"
+            FileName = FileName & ".cls"
         Case vbext_ct_MSForm
-            szFileName = szFileName & ".frm"
+            FileName = FileName & ".frm"
         Case vbext_ct_StdModule
-            szFileName = szFileName & ".bas"
+            FileName = FileName & ".bas"
         Case vbext_ct_Document
-            '                szFileName = szFileName & ".cls"
+            '                FileName = FileName & ".cls"
             Export = False
         Case vbext_ct_ActiveXDesigner
             Export = False
@@ -116,7 +117,7 @@ Public Sub ExportVBAProject()
 
         If Export Then
             ''' Export the component to a text file.
-            cmpComponent.Export szExportPath & szFileName
+            cmpComponent.Export Path & FileName
 
         End If
 
@@ -127,14 +128,21 @@ Public Sub ExportVBAProject()
 
 End Sub                                          ' ExportVBAProject
 
-Private Function GetFolder(ByVal Descrip As String) As String
+Private Function GetFolder( _
+        ByVal Descrip As String, _
+        ByVal StartingPath As String _
+        ) As String
+    ' VBNullString return means user cancelled
+    
+    If StartingPath <> "|" Then StartingPath = StartingPath & "\"
+    
     Dim Folder As FileDialog
     Dim SelItem As String
     Set Folder = Application.FileDialog(msoFileDialogFolderPicker)
     With Folder
         .Title = Descrip
         .AllowMultiSelect = False
-        .InitialFileName = Application.DefaultFilePath
+        .InitialFileName = StartingPath
         If .Show <> -1 Then GoTo NextCode
         SelItem = .SelectedItems(1)
     End With
@@ -165,8 +173,7 @@ Public Sub ImportVBAProject()
         ' components not deleted; stop processing
         Exit Sub
     End If
-
-
+    
     If ProjectToImport.Protection = 1 Then
         MsgBox "The VBA in this workbook is protected; " & _
                "it is not possible to export the code", _
@@ -177,7 +184,9 @@ Public Sub ImportVBAProject()
 
     'Get the path to the folder with modules
     Dim Path As String
-    Path = GetFolder("Select the Folder Containing the VBA Code You Want to Import")
+    Path = GetFolder( _
+           "Select the Folder Containing the VBA Code You Want to Import", _
+           ThisWorkbook.Path)
     If Path = vbNullString Then Exit Sub
     If FolderWithVBAProjectFiles(Path) = "Error" Then
         MsgBox "Import Folder does not exist", _
@@ -219,6 +228,7 @@ Public Sub ImportVBAProject()
            "Import Complete"
 
 End Sub                                          ' ImportVBAProject
+
 Private Function FolderWithVBAProjectFiles(ByRef Path As String) As String
     '
     '*******************************************************************************
@@ -267,10 +277,10 @@ Private Function FolderWithVBAProjectFiles(ByRef Path As String) As String
 End Function                                     ' FolderWithVBAProjectFiles
 
 Private Function DeleteComponentsInProject(ByVal Proj As VBIDE.VBProject) As Boolean
-' True = components deleted
-' False = components not deleted
+    ' True = components deleted
+    ' False = components not deleted
 
-DeleteComponentsInProject = False
+    DeleteComponentsInProject = False
     Select Case MsgBox("All components of this VBA Project will be deleted. " & _
                        "Do you want to continue?", _
                        vbYesNo Or vbQuestion, _
@@ -286,10 +296,11 @@ DeleteComponentsInProject = False
                 Proj.VBComponents.Remove VBComp
             End If
         Next VBComp
-DeleteComponentsInProject = True
+        DeleteComponentsInProject = True
     Case vbNo
-DeleteComponentsInProject = False
+        DeleteComponentsInProject = False
     End Select
 
 End Function                                     ' DeleteComponentsInProject
+
 

@@ -4,6 +4,7 @@ UserForm*.frx
 #####################
 # Don't need to retain Personal.xlsb in git
 Personal.xlsb
+# Don't retain binary files
 *.xls
 *.xlsx
 *.xlm
