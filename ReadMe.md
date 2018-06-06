@@ -1,4 +1,4 @@
-#Overview#
+# Overview #
 This repo creates the capability to manipulate Git and GitHub from within the VBIDE.
 ## Usage ##
 From within the GitRoutines module, execute the CreateMenu sub. This adds a new dropdown menu in the main VBIDE menu called GitCommands.
