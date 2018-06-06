@@ -1,0 +1,11 @@
+# Don't retain the auto-generated UserForms
+UserForm*.frm
+UserForm*.frx
+#####################
+# Don't need to retain Personal.xlsb in git
+Personal.xlsb
+*.xls
+*.xlsx
+*.xlm
+*.xlsm
+#####################

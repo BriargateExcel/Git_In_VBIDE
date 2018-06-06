@@ -2,18 +2,20 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CVBECommandHandler"
+Attribute VB_Name = "GitHandlerClass"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public WithEvents EvtHandler As VBIDE.CommandBarEvents
-Attribute EvtHandler.VB_VarHelpID = -1
+Public WithEvents GitEvtHandler As VBIDE.CommandBarEvents
+Attribute GitEvtHandler.VB_VarHelpID = -1
 
-Private Sub EvtHandler_Click(ByVal CommandBarControl As Object, _
-    Handled As Boolean, CancelDefault As Boolean)
+Private Sub GitEvtHandler_Click( _
+        ByVal CommandBarControl As Object, _
+        Handled As Boolean, _
+        CancelDefault As Boolean)
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' This is called when a item is clicked. Call the
@@ -28,4 +30,7 @@ Private Sub EvtHandler_Click(ByVal CommandBarControl As Object, _
     '''''''''''''''''''''''''''''''''''''''''''''''''''''
     Handled = True
     CancelDefault = True
+    On Error GoTo 0
 End Sub
+
+
